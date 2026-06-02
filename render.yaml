@@ -1,0 +1,66 @@
+services:
+  # 1. Backend Web Service (Flask)
+  - type: web
+    name: contract-analyzer-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ca-redis
+          property: connectionString
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: contract-analyzer-frontend
+          property: url
+      - key: ALLOWED_ORIGINS
+        fromService:
+          type: web
+          name: contract-analyzer-frontend
+          property: url
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false # You will input this manually in the dashboard
+
+  # 2. Celery Worker (Processes the heavy contract analysis / FAISS lookups)
+  - type: worker
+    name: contract-analyzer-worker
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.celery worker --loglevel=info
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ca-redis
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false
+
+  # 3. Frontend Static Site (React/Vite)
+  - type: web
+    name: contract-analyzer-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: contract-analyzer-backend
+          property: url
+
+# 4. Managed Redis Instance
+redis:
+  name: ca-redis
+  plan: free
+  ipAllowList: [] # Restricts access completely to your backend services
