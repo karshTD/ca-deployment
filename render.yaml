@@ -14,20 +14,12 @@ services:
           type: redis
           name: ca-redis
           property: connectionString
-      - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: contract-analyzer-frontend
-          property: url
-      - key: ALLOWED_ORIGINS
-        fromService:
-          type: web
-          name: contract-analyzer-frontend
-          property: url
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: GROQ_API_KEY
         sync: false
+      # We will set FRONTEND_URL and ALLOWED_ORIGINS directly in the dashboard 
+      # once the static site generates its unique URL.
 
   # 2. Celery Worker (Background processing)
   - type: worker
@@ -52,14 +44,9 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    envVars:
-      - key: VITE_API_BASE_URL
-        fromService:
-          type: web
-          name: contract-analyzer-backend
-          property: url
+    # We will specify VITE_API_BASE_URL manually on the dashboard or use relative routes
 
-  # 4. Managed Redis Instance (Moved inside the services array block)
+  # 4. Managed Redis Instance
   - type: redis
     name: ca-redis
     plan: free
