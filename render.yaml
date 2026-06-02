@@ -27,9 +27,9 @@ services:
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: GROQ_API_KEY
-        sync: false # You will input this manually in the dashboard
+        sync: false
 
-  # 2. Celery Worker (Processes the heavy contract analysis / FAISS lookups)
+  # 2. Celery Worker (Background processing)
   - type: worker
     name: contract-analyzer-worker
     env: python
@@ -59,8 +59,8 @@ services:
           name: contract-analyzer-backend
           property: url
 
-# 4. Managed Redis Instance
-redis:
-  name: ca-redis
-  plan: free
-  ipAllowList: [] # Restricts access completely to your backend services
+  # 4. Managed Redis Instance (Moved inside the services array block)
+  - type: redis
+    name: ca-redis
+    plan: free
+    ipAllowList: []
