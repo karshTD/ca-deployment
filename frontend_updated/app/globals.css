@@ -1,0 +1,191 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ===========================================================================
+   Brand tokens — near-black + gold. No blue anywhere.
+   Spend the boldness on the gold; keep everything else quiet.
+   =========================================================================== */
+:root {
+  --gold-1: #f6e7ad;   /* highlight */
+  --gold-2: #e6c76a;   /* mid */
+  --gold-3: #c99a2e;   /* deep */
+  --gold-core: #e2b84f;
+  --gold-glow: rgba(226, 184, 79, 0.32);
+  --ink: #08070a;      /* base black, faintly warm */
+  --ink-2: #0f0e12;    /* elevated surface */
+  --paper: #f3f0e8;    /* warm off-white text */
+  --paper-muted: #8f8b81; /* warm muted text */
+}
+
+/* shadcn/ui token structure — kept so all UI components still work,
+   retuned to the black/gold palette. App runs in .dark always. */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.06 0.004 60);        /* near-black, warm */
+  --foreground: oklch(0.96 0.008 85);        /* warm off-white */
+  --card: oklch(0.09 0.004 60);
+  --card-foreground: oklch(0.96 0.008 85);
+  --popover: oklch(0.09 0.004 60);
+  --popover-foreground: oklch(0.96 0.008 85);
+  --primary: oklch(0.80 0.12 85);            /* gold */
+  --primary-foreground: oklch(0.14 0.02 70); /* dark ink on gold */
+  --secondary: oklch(0.18 0.006 70);
+  --secondary-foreground: oklch(0.96 0.008 85);
+  --muted: oklch(0.16 0.005 70);
+  --muted-foreground: oklch(0.68 0.02 80);
+  --accent: oklch(0.20 0.02 80);
+  --accent-foreground: oklch(0.96 0.008 85);
+  --destructive: oklch(0.55 0.20 25);
+  --destructive-foreground: oklch(0.96 0.01 25);
+  --border: oklch(0.24 0.008 75);
+  --input: oklch(0.22 0.008 75);
+  --ring: oklch(0.80 0.12 85);               /* gold focus ring */
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-desi: var(--font-desi-src, 'Tillana', cursive);
+  --color-gold: var(--gold-core);
+  --color-ink: var(--ink);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-color: var(--ink);
+  }
+}
+
+/* ===========================================================================
+   Signature elements
+   =========================================================================== */
+
+/* Desi display face for the "namaste" hero word */
+.font-desi {
+  font-family: var(--font-desi), 'Tillana', cursive;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Gold text — flat and gradient variants */
+.text-gold {
+  color: var(--gold-core);
+}
+.text-gold-grad {
+  background: linear-gradient(100deg, var(--gold-1), var(--gold-2) 45%, var(--gold-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The golden call-to-action button with a soft, breathing glow */
+.btn-gold {
+  position: relative;
+  background: linear-gradient(135deg, var(--gold-1) 0%, var(--gold-2) 45%, var(--gold-3) 100%);
+  color: #1a1508;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid rgba(246, 231, 173, 0.5);
+  box-shadow:
+    0 0 0 1px rgba(226, 184, 79, 0.12),
+    0 8px 30px -6px var(--gold-glow),
+    0 0 40px -12px var(--gold-glow);
+  transition: box-shadow 0.4s ease, transform 0.2s ease, filter 0.3s ease;
+  animation: goldBreath 4.5s ease-in-out infinite;
+}
+.btn-gold:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow:
+    0 0 0 1px rgba(246, 231, 173, 0.4),
+    0 10px 40px -6px var(--gold-glow),
+    0 0 70px -8px var(--gold-glow);
+}
+.btn-gold:focus-visible {
+  outline: 2px solid var(--gold-1);
+  outline-offset: 3px;
+}
+
+@keyframes goldBreath {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(226, 184, 79, 0.12),
+      0 8px 30px -6px var(--gold-glow),
+      0 0 32px -14px var(--gold-glow);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(226, 184, 79, 0.22),
+      0 8px 34px -6px var(--gold-glow),
+      0 0 58px -10px var(--gold-glow);
+  }
+}
+
+/* Subtle warm radial behind the hero — replaces the old blue blur */
+.hero-radial {
+  background:
+    radial-gradient(600px 380px at 50% 34%, rgba(226, 184, 79, 0.10), transparent 70%),
+    radial-gradient(900px 500px at 50% 0%, rgba(201, 154, 46, 0.06), transparent 75%);
+}
+
+/* Hairline gold divider */
+.rule-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(226, 184, 79, 0.35), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-gold { animation: none; }
+  * { scroll-behavior: auto; }
+}
